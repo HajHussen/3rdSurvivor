@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    [SerializeField] float timeBetweenAttacks = 1f;
     [SerializeField] float maxSpeed = 7;
     [SerializeField] float chaseDistance = 5f;
     [SerializeField] float suspicionTime = 2.5f;
@@ -37,12 +39,19 @@ public class EnemyAI : MonoBehaviour
             DisableNavMesh();
             return;
         }
+        if (IsInAttackRange())
+        {
+            _animation.SetTrigger("Attack");
+        }
         else
         {
             PatrolBehaviour();
         }
         UpdateTimer();
     }
+
+    
+
     private void UpdateTimer()
     {
         lastSawTime += Time.deltaTime;

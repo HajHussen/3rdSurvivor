@@ -21,7 +21,7 @@ public class BulletProjectile : MonoBehaviour
     private void Start()
     {
         health = GetComponent<Health>();
-        bulletRigidBody.velocity = -transform.up * bulletSpeed;
+        bulletRigidBody.velocity = transform.forward * bulletSpeed;
     }
     private void OnTriggerEnter(Collider other)
     {
