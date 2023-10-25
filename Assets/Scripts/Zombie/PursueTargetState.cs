@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PursueTargetState : State
 {
-    public override State Tick()
+    public override State Tick(ZombieManager zombieManager)
     {
         return this;
     }

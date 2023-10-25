@@ -1,3 +1,4 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class ZombieManager : MonoBehaviour
 {
     public IdleState startingState;
+    public ThirdPersonController currentTarget;
 
      State currentState;
 
@@ -22,7 +24,7 @@ public class ZombieManager : MonoBehaviour
         State nextState;
         if (currentState != null)
         {
-            nextState=currentState.Tick();
+            nextState=currentState.Tick(this);
             if (nextState != null )
             {
                 currentState = nextState;
