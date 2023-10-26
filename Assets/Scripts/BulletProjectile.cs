@@ -12,7 +12,6 @@ public class BulletProjectile : MonoBehaviour
     [SerializeField] Transform vfxHitNonTarget;
 
     Rigidbody bulletRigidBody;
-    Health health;
 
     private void Awake()
     {
@@ -20,7 +19,6 @@ public class BulletProjectile : MonoBehaviour
     }
     private void Start()
     {
-        health = GetComponent<Health>();
         bulletRigidBody.velocity = transform.forward * bulletSpeed;
     }
     private void OnTriggerEnter(Collider other)

@@ -4,7 +4,10 @@ using UnityEngine;
 public class IdleState : State
 {
     [SerializeField] float detectionRadius = 5;
+    [SerializeField] float characterHeight = 1.6f;
+
     [SerializeField] LayerMask detectionLayer;
+    [SerializeField] LayerMask ignoreDetectionLayer;
 
     [Header("Detection Angle Radius")]
     [SerializeField] float minimumDetectionAngle = -50;
@@ -40,23 +43,21 @@ public class IdleState : State
 
             if (player != null)
             {
-                Vector3 targetDirection = player.transform.position - transform.position;
+                Vector3 targetDirection = transform.position - player.transform.position;
                 float viewableAngle = Vector3.Angle(targetDirection, transform.forward);
 
                 if (viewableAngle > minimumDetectionAngle && viewableAngle < maximumDetectionAngle)
                 {
                     RaycastHit hit;
-                    float characterHeight = 1.8f;
                     Vector3 playerStartPoint = new Vector3(player.transform.position.x, characterHeight, player.transform.position.z);
                     Vector3 zombieStartPoint = new Vector3(transform.position.x, characterHeight, transform.position.z);
 
-                    if (Physics.Linecast(playerStartPoint, zombieStartPoint, out hit))
+                    if (Physics.Linecast(playerStartPoint, zombieStartPoint, out hit, ignoreDetectionLayer))
                     {
                         Debug.Log("blocked");
                     }
                     else
                     {
-                        Debug.Log("see u");
                         zombieManager.currentTarget = player;
                     }
                 }

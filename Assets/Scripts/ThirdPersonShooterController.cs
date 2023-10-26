@@ -16,6 +16,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] Rig aimRig;
     [SerializeField] CinemachineVirtualCamera aimCam;
     [SerializeField] Transform debugTransform;
+    [SerializeField] Transform gunShotVFX;
     [SerializeField] Transform bulletProjectilePrefab;
     [SerializeField] Transform spawnBulletPosition;
     [SerializeField] LayerMask aimColliderLayerMask = new LayerMask();
@@ -81,6 +82,7 @@ public class ThirdPersonShooterController : MonoBehaviour
         {
             Vector3 aimDir= (mouseWordPosition-spawnBulletPosition.position).normalized;
             Instantiate(bulletProjectilePrefab, spawnBulletPosition.position, Quaternion.LookRotation(aimDir, Vector3.up));
+            Instantiate(gunShotVFX, spawnBulletPosition);
             starterAssets.shoot = false;
         }
     }
