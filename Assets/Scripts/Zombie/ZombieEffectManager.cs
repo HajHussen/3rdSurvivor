@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ZombieEffectManager : MonoBehaviour
@@ -10,7 +11,6 @@ public class ZombieEffectManager : MonoBehaviour
     {
         zombieManager = GetComponent<ZombieManager>();
     }
-
     public void DamageZombieHead()
     {
         zombieManager.isPerformingAction = true;
@@ -25,21 +25,17 @@ public class ZombieEffectManager : MonoBehaviour
 
     public void DamageZombieRightArm()
     {
-
     }
 
     public void DamageZombieLeftArm()
     {
-
     }
 
     public void DamageZombieRightLeg()
     {
-
     }
 
     public void DamageZombieLeftLeg()
     {
-
     }
 }

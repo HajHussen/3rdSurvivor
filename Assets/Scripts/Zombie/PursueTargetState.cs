@@ -36,9 +36,12 @@ public class PursueTargetState : State
 
     private void RotateToTarget(ZombieManager zombieManager)
     {
-        zombieManager.zombieNavMesh.enabled = true;
-        zombieManager.zombieNavMesh.SetDestination(zombieManager.currentTarget.transform.position);
-        zombieManager.transform.LookAt(zombieManager.currentTarget.transform.position);
+        if (!gameObject.GetComponentInParent<Health>().isDead)
+        {
+            zombieManager.zombieNavMesh.enabled = true;
+            zombieManager.zombieNavMesh.SetDestination(zombieManager.currentTarget.transform.position);
+            zombieManager.transform.LookAt(zombieManager.currentTarget.transform.position);
+        }
         //zombieManager.transform.rotation = Quaternion.Slerp(zombieManager.transform.rotation, zombieManager.zombieNavMesh.transform.rotation, zombieManager.rotationSpeed / Time.deltaTime);
     }
 }
