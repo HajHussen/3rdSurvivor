@@ -2,7 +2,6 @@ using Cinemachine;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using UnityEngine.UI;
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
@@ -11,15 +10,22 @@ public class ThirdPersonShooterController : MonoBehaviour
     [Range(1, 8)]
     [SerializeField] float normalSensitivity;
 
+    [SerializeField] float weaponRange = 100f;
+    [SerializeField] float bulletDamage = 10;
+
     [SerializeField] GameObject crosshair;
 
     [SerializeField] Rig aimRig;
     [SerializeField] CinemachineVirtualCamera aimCam;
     [SerializeField] Transform debugTransform;
     [SerializeField] Transform gunShotVFX;
-    [SerializeField] Transform bulletProjectilePrefab;
+    [SerializeField] Transform bulletEjectionVFX;
+    //[SerializeField] Transform bulletProjectilePrefab;
     [SerializeField] Transform spawnBulletPosition;
-    [SerializeField] LayerMask aimColliderLayerMask = new LayerMask();
+    [SerializeField] Transform bulletEjectionPosition;
+    [SerializeField] LayerMask shootableLayermask;
+    [SerializeField] Transform vfxHitTarget;
+    [SerializeField] Transform vfxHitNonTarget;
 
     ThirdPersonController thirdPersonController;
     StarterAssetsInputs starterAssets;
@@ -36,13 +42,16 @@ public class ThirdPersonShooterController : MonoBehaviour
     {
         Vector3 mouseWordPosition = Vector3.zero;
 
-
         Vector2 screenCenterPoint = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
-        if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask))
+
+        Transform hitTransform = null;
+
+        if (Physics.Raycast(ray, out RaycastHit raycastHit, weaponRange, shootableLayermask))
         {
             debugTransform.position = raycastHit.point;
             mouseWordPosition = raycastHit.point;
+            hitTransform = raycastHit.transform;
         }
 
         if (starterAssets.aim)
@@ -50,7 +59,7 @@ public class ThirdPersonShooterController : MonoBehaviour
             aimCam.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
             thirdPersonController.SetRotateOnMove(false);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1),1f,Time.deltaTime*10f));
+            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 10f));
 
             Vector3 worldAimTarget = mouseWordPosition;
             worldAimTarget.y = transform.position.y;
@@ -80,9 +89,37 @@ public class ThirdPersonShooterController : MonoBehaviour
 
         if (starterAssets.shoot)
         {
-            Vector3 aimDir= (mouseWordPosition-spawnBulletPosition.position).normalized;
-            Instantiate(bulletProjectilePrefab, spawnBulletPosition.position, Quaternion.LookRotation(aimDir, Vector3.up));
+            if (hitTransform != null)
+            {
+                if (hitTransform.GetComponent<BulletTarget>() != null)
+                {
+                    Instantiate(vfxHitTarget, mouseWordPosition, Quaternion.identity);
+                    hitTransform.GetComponent<Health>().TakeDamage(bulletDamage);
+                    Debug.Log(raycastHit.collider.gameObject.layer);
+
+                    ZombieEffectManager zombie = raycastHit.collider.gameObject.GetComponentInParent<ZombieEffectManager>();
+
+                    if (zombie != null)
+                    {
+                        if (raycastHit.collider.gameObject.layer == 8)
+                        {
+                            zombie.DamageZombieHead();
+                        }
+                        else if (raycastHit.collider.gameObject.layer == 9)
+                        {
+                            zombie.DamageZombieTorso();
+                        }
+                    }
+                }
+                else
+                {
+                    Instantiate(vfxHitNonTarget, mouseWordPosition, Quaternion.identity);
+                }
+            }
+            //Vector3 aimDir = (mouseWordPosition - spawnBulletPosition.position).normalized;
+            //Instantiate(bulletProjectilePrefab, spawnBulletPosition.position, Quaternion.LookRotation(aimDir, Vector3.up));
             Instantiate(gunShotVFX, spawnBulletPosition);
+            Instantiate(bulletEjectionVFX, bulletEjectionPosition);
             starterAssets.shoot = false;
         }
     }

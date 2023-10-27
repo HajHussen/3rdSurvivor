@@ -7,6 +7,8 @@ public class ZombieManager : MonoBehaviour
     public float distanceFromCurrentTarget;
     public float minimumAttackDistance = 1;
 
+    public bool isPerformingAction;
+
     public IdleState startingState;
     public ThirdPersonController currentTarget;
     public Animator animator;

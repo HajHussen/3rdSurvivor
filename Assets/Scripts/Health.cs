@@ -10,12 +10,15 @@ public class Health : MonoBehaviour
     [SerializeField] float currentHealth;
     [SerializeField] float maxHealth;
 
+    ZombieManager zombieManager;
+
     public bool isDead=false;
 
     Animator animator;
 
     private void Start()
     {
+        zombieManager=GetComponent<ZombieManager>();
         animator = GetComponent<Animator>();
         currentHealth = startingHealth;
     }
@@ -34,6 +37,7 @@ public class Health : MonoBehaviour
         {
             animator.SetTrigger("Death");
             gameObject.GetComponent<Collider>().enabled = false;
+            zombieManager.zombieNavMesh.enabled = false;
             isDead = true;
         }
     }
